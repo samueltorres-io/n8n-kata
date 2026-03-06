@@ -1,0 +1,196 @@
+{
+  "name": "My workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "api/support/chat",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -368,
+        32
+      ],
+      "id": "f342c16a-42be-42aa-98c4-8023471301f7",
+      "name": "Webhook",
+      "webhookId": "59f1ac53-1263-4ef4-a6b9-72bf06022bc5"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "8efd063c-aad7-4dda-8831-0303ccce6862",
+              "name": "body.userName",
+              "value": "={{ $json.body.userName }}",
+              "type": "string"
+            },
+            {
+              "id": "6659a069-1ad5-4d0d-ae6d-d08a3230e1a0",
+              "name": "body.question",
+              "value": "={{ $json.body.question }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -160,
+        32
+      ],
+      "id": "c17571f6-42a5-4830-8ec5-4b79d52abf2a",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://ollama:11434/api/generate",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n\t\"model\": \"smollm2:135m\",\n\t\"prompt\": \"Answer the following question clearly and concisely.\\n\\nUser: {{ $json.body.userName }}\\nQuestion: {{ $json.body.question }}\",\n\t\"stream\": false\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        48,
+        32
+      ],
+      "id": "6dc2ef58-1e91-4f99-91e3-c4004a00cdb8",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "content": "### http://localhost:5678/webhook-test/api/support/chat\n\n```\n{\n\t\"userName\": \"Lucas\",\n\t\"question\": \"What is Docker?\"\n}\n```\n\n### http://ollama:11434/api/generate\n\n```\n{\n\t\"model\": \"smollm2:135m\",\n\t\"prompt\": \"Answer the following question clearly and concisely.\\n\\nUser: {{ $json.body.userName }}\\nQuestion: {{ $json.body.question }}\",\n\t\"stream\": false\n}\n```\n\n```\n{\n\t\"response\": \"Docker is an open-source container management and deployment system that provides a way to run multiple containers on a single machine or a network. It is used to create, manage, and scale applications that are isolated from the operating system. Docker containers are typically created using Docker Hub and can be used in a production environment.\"\n}\n```",
+        "height": 512,
+        "width": 1136
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -464,
+        192
+      ],
+      "typeVersion": 1,
+      "id": "32954412-fc69-43af-8273-d9ded116b3b1",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "content": "## Simple LLM API (Test KATA)",
+        "height": 208,
+        "width": 1136
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -464,
+        -16
+      ],
+      "typeVersion": 1,
+      "id": "d5e98336-2ec6-4067-a283-a9e71c797fc3",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "faf838b6-b754-47cd-beb5-355b44bfe807",
+              "name": "response",
+              "value": "={{ $json.response }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        256,
+        32
+      ],
+      "id": "c4f2b9cf-7f2e-4982-8009-45292e5b8e51",
+      "name": "Edit Fields1"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={\n  \"response\": \"{{ $json.response }}\"\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        464,
+        32
+      ],
+      "id": "df931222-da58-4906-ab5a-349a6ed09053",
+      "name": "Respond to Webhook"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields1": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "bf839d6d-9e82-4459-8f75-a6e401e3bcf0",
+  "meta": {
+    "instanceId": "2358a318c45d3bb46eacc8bfdee59e1cfad76a92292bd24384d48d9388343566"
+  },
+  "id": "DutlTFujtCSONz63",
+  "tags": []
+}
