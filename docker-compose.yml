@@ -14,3 +14,13 @@ services:
       - GENERIC_TIMEZONE=America/Sao_Paulo
     volumes:
       - ./n8n_data:/home/node/.n8n
+    depends_on:
+      - ollama
+
+  ollama:
+    image: ollama/ollama:latest
+    restart: always
+    ports:
+      - "11434:11434"
+    volumes:
+      - ./ollama_data:/root/.ollama
