@@ -24,3 +24,23 @@ services:
       - "11434:11434"
     volumes:
       - ./ollama_data:/root/.ollama
+
+  libretranslate:
+    image: libretranslate/libretranslate:latest
+    container_name: libretranslate
+    restart: unless-stopped
+    ports:
+      - "5000:5000"
+    environment:
+      - LT_LOAD_ONLY=en,pt,es
+      - LT_UPDATE_MODELS=true
+    volumes:
+      - lt-local:/home/libretranslate/.local
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:5000/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+volumes:
+  lt-local:
