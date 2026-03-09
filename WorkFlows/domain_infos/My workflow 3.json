@@ -1,0 +1,1389 @@
+{
+  "name": "My workflow 3",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "api/verify-address",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -416,
+        0
+      ],
+      "id": "ef1c1b2e-b753-4f11-997d-e591e3ed7167",
+      "name": "Webhook",
+      "webhookId": "3cad3740-82e0-4e9a-8fb7-4bd616beebb6"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "{\n  \"status\": 400,\n  \"message\": \"Invalid Arguments\"\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        64,
+        224
+      ],
+      "id": "52d59dfb-82de-4ac8-bf42-9350b73b4d39",
+      "name": "Respond to Webhook"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.body.type }}",
+                    "rightValue": "ip",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "8a3eecbb-113a-4d84-9f5f-1a939d012512"
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "5bcaf60a-01d9-456e-9564-000ed1a09aa3",
+                    "leftValue": "={{ $json.body.type }}",
+                    "rightValue": "domain",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "options": {
+          "fallbackOutput": "extra"
+        }
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.4,
+      "position": [
+        -176,
+        -16
+      ],
+      "id": "bee48e65-9d93-4c31-a6db-ccb2de7c8f8d",
+      "name": "Switch"
+    },
+    {
+      "parameters": {
+        "jsCode": "const validIpRegex = /^(\\d|[1-9]\\d|1\\d\\d|2([0-4]\\d|5[0-5]))\\.(\\d|[1-9]\\d|1\\d\\d|2([0-4]\\d|5[0-5]))\\.(\\d|[1-9]\\d|1\\d\\d|2([0-4]\\d|5[0-5]))\\.(\\d|[1-9]\\d|1\\d\\d|2([0-4]\\d|5[0-5]))$/;\n\nconst isValid = validIpRegex.test($input.first().json.body.address);\n\nreturn [\n  {\n    \"isValid\": isValid,\n    ...$input.first().json.body\n  }\n]"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        64,
+        -144
+      ],
+      "id": "de966ee7-93e5-4838-aefc-5978de705553",
+      "name": "Verifica se o IP é válido"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "0987f2f5-87fd-4b97-bcab-2e00082ce84e",
+              "leftValue": "={{ $json.isValid }}",
+              "rightValue": false,
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        272,
+        -144
+      ],
+      "id": "ef976df3-74f7-43e3-9a8e-b2de1b444ddd",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "{\n  \"status\": 400,\n  \"message\": \"Invalid IP Address\"\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        528,
+        -128
+      ],
+      "id": "42d0fd58-c6a9-42fa-aef4-f4404c96085e",
+      "name": "Respond to Webhook1"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "0987f2f5-87fd-4b97-bcab-2e00082ce84e",
+              "leftValue": "={{ $json.isValid }}",
+              "rightValue": false,
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        272,
+        0
+      ],
+      "id": "065f642f-ba4f-437f-9db7-2323c35e46d1",
+      "name": "If1"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "{\n  \"status\": 400,\n  \"message\": \"Invalid Domain Address\"\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        528,
+        16
+      ],
+      "id": "af0acad2-390f-426b-97b4-a52470c5da20",
+      "name": "Respond to Webhook2"
+    },
+    {
+      "parameters": {
+        "jsCode": "const domainRegex = /^((?!-)[A-Za-z0-9-]{1,63}(?<!-)\\.)+[A-Za-z]{2,6}$/;\n\nconst isValid = domainRegex.test($input.first().json.body.address);\n\nreturn [\n  {\n    \"isValid\": isValid,\n    ...$input.first().json.body\n  }\n]"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        64,
+        0
+      ],
+      "id": "9a3dc3da-6858-4b51-b04d-b79a077aa3a7",
+      "name": "Verifica se o Domain é válido"
+    },
+    {
+      "parameters": {
+        "url": "https://dns.google/resolve",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "name",
+              "value": "={{ $json.address }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        784,
+        -16
+      ],
+      "id": "5f5d1920-71a5-4c5a-a377-48949adbcfa6",
+      "name": "Domain to IP"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "2b9d564d-927d-42be-9e5b-2111b9ddd68e",
+              "name": "ip",
+              "value": "={{ $json.Answer[0].data }}",
+              "type": "string"
+            },
+            {
+              "id": "5cc9caef-e930-4d57-9c8c-5b83b6765dd5",
+              "name": "hostname",
+              "value": "={{ $json.Answer[0].name }}",
+              "type": "string"
+            },
+            {
+              "id": "3585fd57-0dd2-4f94-bb8a-46d0c639677c",
+              "name": "type",
+              "value": "={{ $json.Answer[0].type }}",
+              "type": "number"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        976,
+        -16
+      ],
+      "id": "cb452e63-181b-45eb-b6a7-bb663f7ac1a8",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "ada5634b-0009-4d86-9a97-4070adf9a110",
+              "leftValue": "={{ $json.ip }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        1168,
+        -16
+      ],
+      "id": "3ca5a47b-beed-4331-87c0-48f4670cd2d2",
+      "name": "If2"
+    },
+    {
+      "parameters": {
+        "url": "=http://ip-api.com/json/{{ $json.ip }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        1744,
+        -512
+      ],
+      "id": "b09bb377-4c3e-4504-84d3-1f969c470ac3",
+      "name": "HTTP Request",
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "{\n  \"status\": 400,\n  \"message\": \"Cannot get IP Address of Domain\"\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        1456,
+        0
+      ],
+      "id": "aad8a283-8367-4a80-bda7-22d71626ec03",
+      "name": "Respond to Webhook3"
+    },
+    {
+      "parameters": {
+        "url": "=https://ssl-checker.io/api/v1/check/{{ $json.hostname }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        1744,
+        -336
+      ],
+      "id": "5328425b-968d-4c57-bb4a-4712a1410a1b",
+      "name": "HTTP Request1",
+      "retryOnFail": false,
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "return $input.all();"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1456,
+        -160
+      ],
+      "id": "fc00b608-3be6-49ad-add0-37bab815078b",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "url": "=https://ipapi.co/{{ $json.address }}/json",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        1744,
+        -160
+      ],
+      "id": "7be1aefc-6ce6-433b-a2cb-168b6e30ffe5",
+      "name": "HTTP Request2",
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "url": "=https://ipwho.is/{{ $json.ip }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        1744,
+        -688
+      ],
+      "id": "f861055b-f43d-4898-92bc-6e6d0dc967cc",
+      "name": "HTTP Request3",
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "url": "=https://api.hackertarget.com/reverseiplookup/?q={{ $json.address }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        1744,
+        -864
+      ],
+      "id": "0e25a8b8-860c-4492-a4d1-72416aaf61c7",
+      "name": "HTTP Request4",
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "const domains = $json.data.split(\"\\n\");\n\nreturn domains.map(domain => {\n  return {\n    domain: domain\n  };\n});"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2368,
+        -880
+      ],
+      "id": "98a1933d-b3f5-4c77-841a-126c5c8b28e2",
+      "name": "Code in JavaScript1"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        2576,
+        -864
+      ],
+      "id": "b8784ef5-53ce-4e2b-b10a-e61d5822b48c",
+      "name": "Loop Over Items"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "name": "Replace Me",
+      "typeVersion": 1,
+      "position": [
+        3376,
+        -848
+      ],
+      "id": "d2d376c7-1265-4a2a-a5fd-77d0cdcab2e6"
+    },
+    {
+      "parameters": {
+        "url": "=https://securityheaders.com/?q={{ $json.domain }}&followRedirects=on&hide=on&format=json",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "User-Agent",
+              "value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/120.0 Safari/537.36"
+            },
+            {
+              "name": "Accept",
+              "value": "application/json"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        2816,
+        -848
+      ],
+      "id": "d5e8d573-3601-48dd-88b2-a5e8aea8b374",
+      "name": "HTTP Request6"
+    },
+    {
+      "parameters": {
+        "jsCode": "const html = $input.first().json.data\n\nconst grade = html.match(/score_[a-z]+\"><span>(.*?)<\\/span>/)?.[1];\n\nreturn [\n  {\n    \"grade\": grade\n  }\n]"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3008,
+        -848
+      ],
+      "id": "9a21a8ba-6807-4bdb-a2e6-ce980b4a9e3d",
+      "name": "Code in JavaScript2"
+    },
+    {
+      "parameters": {
+        "jsCode": "return [\n  {\n    \"domain\": $('Loop Over Items').first().json.domain,\n    \"grade\": $input.first().json.grade\n  }\n]"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3200,
+        -848
+      ],
+      "id": "1055fa2a-e263-4342-ab89-d029d6a0abe1",
+      "name": "Code in JavaScript3",
+      "executeOnce": false
+    },
+    {
+      "parameters": {
+        "content": "## Verify if data is valid",
+        "height": 368,
+        "width": 400,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        16,
+        -208
+      ],
+      "typeVersion": 1,
+      "id": "b418183f-ae77-46d5-8c75-1fe5a343d793",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "e7bc4010-a90b-4308-bec8-a6e5414c8c82",
+              "name": "ip",
+              "value": "={{ $json.ip }}",
+              "type": "string"
+            },
+            {
+              "id": "65622536-96ca-4f73-bbc9-4200c714d045",
+              "name": "network",
+              "value": "={{ $json.network }}",
+              "type": "string"
+            },
+            {
+              "id": "5230d0eb-c3c8-4f6b-92eb-1ab8cb48d2c2",
+              "name": "version",
+              "value": "={{ $json.version }}",
+              "type": "string"
+            },
+            {
+              "id": "2b2a0bfd-dcb3-4f93-9cca-c0985af7e86d",
+              "name": "city",
+              "value": "={{ $json.city }}",
+              "type": "string"
+            },
+            {
+              "id": "9fa5f2c1-1491-4ede-b635-174a03359607",
+              "name": "region",
+              "value": "={{ $json.region }}",
+              "type": "string"
+            },
+            {
+              "id": "bc72f10f-7a8b-47e7-bf83-533ca249bbc4",
+              "name": "region_code",
+              "value": "={{ $json.region_code }}",
+              "type": "string"
+            },
+            {
+              "id": "218a37dc-1f24-453c-b379-9bcad8ff453e",
+              "name": "country",
+              "value": "={{ $json.country }}",
+              "type": "string"
+            },
+            {
+              "id": "d37b17d9-c6df-471e-8eb8-d21b0f42e116",
+              "name": "country_name",
+              "value": "={{ $json.country_name }}",
+              "type": "string"
+            },
+            {
+              "id": "6fb25952-d475-4ddf-b54a-6c0f8b649eb6",
+              "name": "asn",
+              "value": "={{ $json.asn }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        2368,
+        -176
+      ],
+      "id": "da71d387-0f0c-4b09-a40f-58ba3f642221",
+      "name": "Edit Fields2"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "61b1a131-6a65-4b96-8c1e-812565f55f5d",
+              "name": "ip",
+              "value": "={{ $json.result.resolved_ip }}",
+              "type": "string"
+            },
+            {
+              "id": "8b4b2334-e266-4d20-87bb-7c4b91066816",
+              "name": "host",
+              "value": "={{ $json.result.host }}",
+              "type": "string"
+            },
+            {
+              "id": "92eaf1b3-7d12-4dae-9fe7-b1673d55ec96",
+              "name": "issued_to",
+              "value": "={{ $json.result.issued_to }}",
+              "type": "string"
+            },
+            {
+              "id": "4294e318-3ad7-49ea-800e-b950121a731e",
+              "name": "ssl.cert_valid",
+              "value": "={{ $json.result.cert_valid }}",
+              "type": "boolean"
+            },
+            {
+              "id": "bb98cd19-1047-461b-82f8-8ef78359ae48",
+              "name": "ssl.cert_exp",
+              "value": "={{ $json.result.cert_exp }}",
+              "type": "boolean"
+            },
+            {
+              "id": "6087af5d-f6cf-4d6c-989e-81ce3d56f467",
+              "name": "ssl.cert_sans",
+              "value": "={{ $json.result.cert_sans }}",
+              "type": "string"
+            },
+            {
+              "id": "9e9605a5-5109-46d8-8ba8-30e0bc3e02c4",
+              "name": "ssl.days_left",
+              "value": "={{ $json.result.days_left }}",
+              "type": "number"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        2368,
+        -352
+      ],
+      "id": "87b47064-8d30-478b-a832-56defd7af23b",
+      "name": "Edit Fields3"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "cbb3ad18-2b23-4b53-9742-d34351970e20",
+              "name": "ip",
+              "value": "={{ $json.query }}",
+              "type": "string"
+            },
+            {
+              "id": "24a99924-51c4-4b9b-b43f-e89784ace44a",
+              "name": "isp",
+              "value": "={{ $json.isp }}",
+              "type": "string"
+            },
+            {
+              "id": "fc5a6c2a-b3de-4adc-a869-425996fa68dc",
+              "name": "org",
+              "value": "={{ $json.org }}",
+              "type": "string"
+            },
+            {
+              "id": "34b5c2f8-e606-4644-ba4b-1f0ee7eae7b2",
+              "name": "asn",
+              "value": "={{ $json.as }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        2368,
+        -528
+      ],
+      "id": "6b0bdee2-aa16-4f07-af19-25b1ce05432f",
+      "name": "Edit Fields4"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "86354869-c097-4dee-81da-5e7eed6a3189",
+              "name": "ip",
+              "value": "={{ $json.ip }}",
+              "type": "string"
+            },
+            {
+              "id": "74834ff2-4b99-408e-b121-3463eb60ca76",
+              "name": "isp",
+              "value": "={{ $json.connection.isp }}",
+              "type": "string"
+            },
+            {
+              "id": "9887062a-38d5-4c91-b724-66e816c815b2",
+              "name": "org",
+              "value": "={{ $json.connection.org }}",
+              "type": "string"
+            },
+            {
+              "id": "81fe895e-c78b-4c70-b3b4-ff29aff979be",
+              "name": "asn",
+              "value": "={{ $json.connection.asn }}",
+              "type": "number"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        2368,
+        -704
+      ],
+      "id": "ead4b3b8-1081-4a3a-acc5-691a393cb1e1",
+      "name": "Edit Fields5"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "fieldsToMatchString": "ip",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        2560,
+        -272
+      ],
+      "id": "4a6d0e0c-d84e-45ec-8250-471c216c6248",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "fieldsToMatchString": "ip",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        2560,
+        -624
+      ],
+      "id": "499d683b-4421-4ff8-aac2-7808d41c3fee",
+      "name": "Merge1"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "fieldsToMatchString": "ip",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        2736,
+        -416
+      ],
+      "id": "7f8e7b9d-a958-455f-b0e3-7a4f1ded2296",
+      "name": "Merge2"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "a3eaf38a-2e85-4e23-9b0e-25119300e940",
+              "name": "ip",
+              "value": "={{ $json.ip }}",
+              "type": "string"
+            },
+            {
+              "id": "360083dd-3a08-4642-8662-0743b1d03c4a",
+              "name": "host",
+              "value": "={{ $json.host }}",
+              "type": "string"
+            },
+            {
+              "id": "66a65dfb-ed35-4da1-a807-ef23ad516b6b",
+              "name": "network",
+              "value": "={{ $json.network }}",
+              "type": "string"
+            },
+            {
+              "id": "8a29fdf5-d64a-4946-88ef-061c93cce9ac",
+              "name": "version",
+              "value": "={{ $json.version }}",
+              "type": "string"
+            },
+            {
+              "id": "51fa3b59-30af-43db-81aa-454917df1d59",
+              "name": "isp",
+              "value": "={{ $json.isp }}",
+              "type": "string"
+            },
+            {
+              "id": "aafde40b-4019-4d6f-9841-c45de3be5cfc",
+              "name": "org",
+              "value": "={{ $json.org }}",
+              "type": "string"
+            },
+            {
+              "id": "7e11e78c-3456-4d59-8675-59902b8ead52",
+              "name": "asn",
+              "value": "={{ $json.asn }}",
+              "type": "string"
+            },
+            {
+              "id": "5e70f90e-cd0f-4206-b4f1-88be17c965f4",
+              "name": "issued_to",
+              "value": "={{ $json.issued_to }}",
+              "type": "string"
+            },
+            {
+              "id": "ec54c927-516f-4e1c-a174-53c210906d2a",
+              "name": "ssl",
+              "value": "={{ $json.ssl }}",
+              "type": "object"
+            },
+            {
+              "id": "18dd2fc1-4ca3-4a9a-8246-e828d6c367f3",
+              "name": "city",
+              "value": "={{ $json.city }}",
+              "type": "string"
+            },
+            {
+              "id": "050677cf-7a55-4b7d-af98-204609de6cc9",
+              "name": "region",
+              "value": "={{ $json.region }}",
+              "type": "string"
+            },
+            {
+              "id": "16d34426-fdc9-4912-b591-62521196fa9a",
+              "name": "region_code",
+              "value": "={{ $json.region_code }}",
+              "type": "string"
+            },
+            {
+              "id": "d2abb2e1-f42d-4d01-9932-d46731db8a68",
+              "name": "country",
+              "value": "={{ $json.country }}",
+              "type": "string"
+            },
+            {
+              "id": "6c99746c-6e92-4875-a87e-900f8fec3c79",
+              "name": "country_name",
+              "value": "={{ $json.country_name }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        2944,
+        -416
+      ],
+      "id": "591d8d07-b6ee-436b-880f-c6807f87a0d3",
+      "name": "Edit Fields6"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        3248,
+        -400
+      ],
+      "id": "007cfc92-512f-4ea2-87b4-7a2a6fca5f17",
+      "name": "Merge3"
+    },
+    {
+      "parameters": {
+        "jsCode": "const array = [];\n\nfor (const item of $input.all()) {\n  array.push(item.json) \n}\n\nreturn [\n  {\n    \"domains\": array\n  }\n]"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2816,
+        -624
+      ],
+      "id": "bb011572-f1a1-43cb-93d7-9e9ff0f67f48",
+      "name": "Code in JavaScript4"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        3456,
+        -400
+      ],
+      "id": "3b73c858-fcf1-4908-9863-9ebdc4e48a4a",
+      "name": "Respond to Webhook4"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        2304,
+        64
+      ],
+      "id": "c9fc6c8d-d0d5-4362-ad97-b05b3cdfb473",
+      "name": "Respond to Webhook5"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "Verifica se o IP é válido",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Verifica se o Domain é válido",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Verifica se o IP é válido": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Respond to Webhook1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If1": {
+      "main": [
+        [
+          {
+            "node": "Domain to IP",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Respond to Webhook2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Verifica se o Domain é válido": {
+      "main": [
+        [
+          {
+            "node": "If1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Domain to IP": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "If2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If2": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Respond to Webhook3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "HTTP Request1",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "HTTP Request2",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "HTTP Request3",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "HTTP Request4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields4",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Respond to Webhook5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request1": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields3",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Respond to Webhook5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request2": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields2",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Respond to Webhook5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request4": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Respond to Webhook5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript1": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript4",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "HTTP Request6",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Replace Me": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request6": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript2": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript3": {
+      "main": [
+        [
+          {
+            "node": "Replace Me",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request3": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields5",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Respond to Webhook5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields5": {
+      "main": [
+        [
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields4": {
+      "main": [
+        [
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Edit Fields3": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields2": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Merge1": {
+      "main": [
+        [
+          {
+            "node": "Merge2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Merge2",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Merge2": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields6",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields6": {
+      "main": [
+        [
+          {
+            "node": "Merge3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge3": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript4": {
+      "main": [
+        [
+          {
+            "node": "Merge3",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "21eca9c5-eaf6-4d3f-bfcf-a91d976b0f70",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "2358a318c45d3bb46eacc8bfdee59e1cfad76a92292bd24384d48d9388343566"
+  },
+  "id": "R3qJosb34ehEYF7L",
+  "tags": []
+}
