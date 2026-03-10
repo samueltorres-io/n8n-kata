@@ -15,8 +15,11 @@ services:
       - N8N_PORT=5678
       - WEBHOOK_URL=http://localhost:5678
       - GENERIC_TIMEZONE=America/Sao_Paulo
+      - N8N_RESTRICT_FILE_ACCESS_TO=/data/shared
+      - N8N_BLOCK_FILE_ACCESS_TO_N8N_FILES=false
     volumes:
       - ./n8n_data:/home/node/.n8n
+      - ./shared:/data/shared
 
   ollama:
     image: ollama/ollama:latest
