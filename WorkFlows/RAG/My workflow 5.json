@@ -188,6 +188,111 @@
       "typeVersion": 1,
       "id": "85293557-ae41-4350-a7d7-046f8331cdb1",
       "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.4,
+      "position": [
+        -480,
+        592
+      ],
+      "id": "6ca79d72-f772-4724-a798-f00cc03beb1c",
+      "name": "When chat message received",
+      "webhookId": "2b9e2ce8-ecdb-42af-ab04-62975b28d66f"
+    },
+    {
+      "parameters": {
+        "options": {
+          "systemMessage": "=prompt: \"Use the knowledge base to answer the user's question objectively!\", user-question: \"{{ $json.chatInput }}\""
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        -272,
+        592
+      ],
+      "id": "75a42813-aea7-406a-8fc7-97c418459a6a",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "model": "qwen3.5:4b",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOllama",
+      "typeVersion": 1,
+      "position": [
+        -384,
+        832
+      ],
+      "id": "ec242474-62e9-498c-a093-d42a2531cd3f",
+      "name": "Ollama Chat Model",
+      "credentials": {
+        "ollamaApi": {
+          "id": "SKtR7UZg4mNbMHlk",
+          "name": "Ollama account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "retrieve-as-tool",
+        "toolDescription": "Tool para recuperar informações sobre perguntas sobre bitcoin",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.vectorStorePGVector",
+      "typeVersion": 1.3,
+      "position": [
+        -208,
+        800
+      ],
+      "id": "38658c74-e789-400a-8ab3-5d85d83fe5e3",
+      "name": "Postgres PGVector Store1",
+      "credentials": {
+        "postgres": {
+          "id": "JInGWnsezU8CpMnb",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": "nomic-embed-text:latest"
+      },
+      "type": "@n8n/n8n-nodes-langchain.embeddingsOllama",
+      "typeVersion": 1,
+      "position": [
+        -208,
+        944
+      ],
+      "id": "d22ab2ac-e243-4fa0-b4b5-304c06f3c8ba",
+      "name": "Embeddings Ollama1",
+      "credentials": {
+        "ollamaApi": {
+          "id": "SKtR7UZg4mNbMHlk",
+          "name": "Ollama account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "# Chat",
+        "height": 528,
+        "width": 656,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -576,
+        544
+      ],
+      "typeVersion": 1,
+      "id": "3aca5acd-3765-4af2-a18f-104e35819b13",
+      "name": "Sticky Note1"
     }
   ],
   "pinData": {},
@@ -295,6 +400,50 @@
           }
         ]
       ]
+    },
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ollama Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Postgres PGVector Store1": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Embeddings Ollama1": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Postgres PGVector Store1",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "active": false,
@@ -303,7 +452,7 @@
     "binaryMode": "separate",
     "availableInMCP": false
   },
-  "versionId": "61487188-27ca-4bfa-9e19-6cd8cb231de4",
+  "versionId": "ba47e019-74a1-4783-a5c2-a16c12d854e3",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "2358a318c45d3bb46eacc8bfdee59e1cfad76a92292bd24384d48d9388343566"
